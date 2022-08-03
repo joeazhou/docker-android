@@ -89,11 +89,11 @@ RUN  wget -nv -O noVNC.zip "https://github.com/kanaka/noVNC/archive/${NOVNC_SHA}
 #======================
 # Install SDK packages
 #======================
-ARG ANDROID_VERSION=5.0.1
-ARG API_LEVEL=21
+ARG ANDROID_VERSION=12.0
+ARG API_LEVEL=31
 ARG PROCESSOR=x86
-ARG SYS_IMG=x86
-ARG IMG_TYPE=google_apis
+ARG SYS_IMG=x86_64
+ARG IMG_TYPE=google_apis_playstore
 ARG BROWSER=android
 ARG CHROME_DRIVER=2.40
 ARG GOOGLE_PLAY_SERVICE=12.8.74
@@ -191,6 +191,10 @@ COPY devices /root/devices
 COPY src /root/src
 COPY supervisord.conf /root/
 RUN chmod -R +x /root/src && chmod +x /root/supervisord.conf
+
+ADD src/adbkey /root/.android
+ADD src/adbkey.pub /root/.android
+COPY src/adbkey.pub /data/misc/adb/adb_keys
 
 HEALTHCHECK --interval=2s --timeout=40s --retries=1 \
     CMD timeout 40 adb wait-for-device shell 'while [[ -z $(getprop sys.boot_completed) ]]; do sleep 1; done'
